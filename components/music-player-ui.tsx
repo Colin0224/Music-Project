@@ -13,6 +13,7 @@ interface Song {
   artist: string
   duration: string
   albumArt?: string
+  albumBackground?: string
 }
 
 const upNextSongs: Song[] = [
@@ -31,7 +32,8 @@ const currentSong: Song = {
   title: "Sunflower",
   artist: "Rex Orange County • Sunflower • 2017",
   duration: "N/A",
-  albumArt: "/placeholder.jpg",
+  albumArt: "/album.png",
+  albumBackground: "/Background.png",
 }
 
 export default function MusicPlayerUI() {
@@ -41,29 +43,55 @@ export default function MusicPlayerUI() {
   return (
     <div className="flex flex-col h-screen bg-neutral-900 text-neutral-200 font-sans">
       {/* Top Bar */}
-      <header className="h-16 flex items-center justify-between px-6 py-3 border-b border-neutral-800 shrink-0">
-        <div className="relative w-full max-w-md">
-          <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-neutral-500" />
-          <Input
-            placeholder="Search"
-            className="w-full bg-neutral-800 border-neutral-700 pl-10 pr-4 py-2 rounded-md text-sm focus:ring-1 focus:ring-sky-500 focus:border-sky-500 placeholder-neutral-500"
-          />
-        </div>
-        <Button
-          variant="ghost"
-          size="icon"
-          className="rounded-full text-neutral-400 hover:text-white hover:bg-neutral-700/50 ml-4"
-        >
-          <UserIcon className="h-5 w-5" />
-        </Button>
-      </header>
+      <header className="h-16 flex items-center px-6 py-3 border-b border-neutral-800 shrink-0"> {/* Removed justify-between */}
+  {/* Logo Button - Ensure it doesn't shrink */}
+  
+  <Button variant="ghost" className="mr-2 h-14 w-auto px-3 py-2 flex-shrink-0">
+    <Image 
+      src="/LogoFinal2.png" 
+      alt="Logo" 
+      width={0}
+      height={0}
+      sizes="100vw"
+      className="h-12 w-auto object-contain" 
+    />
+  </Button>
+
+  {/* Left Spacer - takes up a smaller portion of the free space */}
+  <div className="flex-grow-[5.5] flex-shrink basis-auto min-w-[10px] sm:min-w-[20px]"></div> {/* Adjust flex-grow ratio and min-width as needed */}
+
+  {/* Search Input - Now a direct flex child, with responsive width */}
+  <div className="relative w-1/3 max-w-xs sm:max-w-sm md:max-w-md min-w-[150px] flex-shrink">
+  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+    <SearchIcon className="h-4 w-4 text-neutral-500" />
+  </div>
+  <Input
+  placeholder="Search"
+  className="w-full bg-neutral-800 border-neutral-700 pl-10 pr-4 py-2 rounded-md text-sm 
+             focus:ring-1 focus:ring-sky-500 focus:border-sky-500 placeholder-neutral-500"
+  type="search" // Optional
+/>
+  </div>
+
+  {/* Right Spacer - takes up a larger portion of the free space, pushing Input left */}
+  <div className="flex-grow-[2] flex-shrink basis-auto min-w-[20px] sm:min-w-[40px]"></div> {/* Adjust flex-grow ratio (e.g., [1.5], [2], [3]) and min-width */}
+
+  {/* User Icon Button - Ensure it doesn't shrink */}
+  <Button
+    variant="ghost"
+    size="icon"
+    className="rounded-full text-neutral-400 hover:text-white hover:bg-neutral-700/50 ml-4 flex-shrink-0"
+  >
+    <UserIcon className="h-5 w-5" />
+  </Button>
+</header>
 
       {/* Main Area */}
       <div className="flex flex-1 overflow-hidden">
         {/* Left Pane (Main Content) */}
         <main className="flex-1 relative overflow-hidden">
           <Image
-            src={currentSong.albumArt || "/placeholder.svg?width=1200&height=1200"}
+            src={currentSong.albumBackground || "/placeholder.svg?width=1200&height=1200"}
             alt="Large Album Art"
             fill
             className="object-cover transition-all duration-500 ease-in-out"
@@ -71,7 +99,7 @@ export default function MusicPlayerUI() {
           />
 
           {/* Music Controls Overlay */}
-          <div className="absolute bottom-6 left-6 right-6 p-4 rounded-xl backdrop-blur-lg bg-black/50 text-white shadow-2xl">
+          <div className="absolute bottom-15 left-6 right-6 mx-auto max-w-2xl p-4 rounded-xl backdrop-blur-lg bg-black/50 text-white shadow-2xl">
             <div className="flex items-center space-x-4">
               <Image
                 src={currentSong.albumArt || "/placeholder.svg?width=64&height=64"}
