@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { SearchIcon, UserIcon, SkipBackIcon, PlayIcon, PauseIcon, SkipForwardIcon, Volume2Icon } from "lucide-react"
+import { User, defaultUser } from "@/types/user"
 
 interface Song {
   id: string
@@ -15,6 +16,8 @@ interface Song {
   albumArt?: string
   albumBackground?: string
 }
+
+
 
 const upNextSongs: Song[] = [
   { id: "1", title: "Easily", artist: "Bruno Major", duration: "3:31" },
@@ -39,6 +42,7 @@ const currentSong: Song = {
 export default function MusicPlayerUI() {
   const [isPlaying, setIsPlaying] = useState(true)
   const [songProgress, setSongProgress] = useState(30) // Percentage
+  const [profileImageSrc, setProfileImageSrc] = useState(defaultUser.profileImage)
 
   return (
     <div className="flex flex-col h-screen bg-neutral-900 text-neutral-200 font-sans">
@@ -78,12 +82,26 @@ export default function MusicPlayerUI() {
 
   {/* User Icon Button - Ensure it doesn't shrink */}
   <Button
-    variant="ghost"
-    size="icon"
-    className="rounded-full text-neutral-400 hover:text-white hover:bg-neutral-700/50 ml-4 flex-shrink-0"
-  >
-    <UserIcon className="h-5 w-5" />
-  </Button>
+          variant="ghost"
+          size="icon"
+          className="rounded-full text-neutral-400 hover:text-white hover:bg-neutral-700/50 ml-4 flex-shrink-0 p-0 overflow-hidden" // Added p-0 and overflow-hidden
+        >
+          {profileImageSrc ? (
+            <Image
+              src={profileImageSrc}
+              alt="User Profile"
+              width={40}
+              height={40}
+              className="rounded-full object-cover w-full h-full"
+              onError={() => {
+                console.warn("Failed to load profile.png, defaulting to UserIcon.");
+                setProfileImageSrc(undefined);
+              }}
+            />
+          ) : (
+            <UserIcon className="h-5 w-5" /> // Default icon if image fails or profileImageSrc is null
+          )}
+        </Button>
 </header>
 
       {/* Main Area */}
