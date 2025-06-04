@@ -26,7 +26,7 @@ export default function ProfileDropdown({ src }: Props) {
           )}
         </button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-40" align="end">
+      <DropdownMenuContent className="w-40 shadow-md" align="end">
         <DropdownMenuItem>View Profile</DropdownMenuItem>
         <DropdownMenuItem>Settings</DropdownMenuItem>
         <DropdownMenuItem>Log Out</DropdownMenuItem>

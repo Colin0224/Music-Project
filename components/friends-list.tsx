@@ -1,5 +1,7 @@
 "use client"
 import { useEffect, useState } from 'react'
+import { Button } from '@/components/ui/button'
+import { toast } from '@/components/ui/use-toast'
 
 interface Friend {
   id: string
@@ -18,12 +20,23 @@ export default function FriendsList() {
       .catch(() => {})
   }, [])
 
+  const invite = () => {
+    navigator.clipboard.writeText(window.location.href)
+    toast({ title: 'Invite link copied!' })
+  }
+
   return (
-    <div className="space-y-2 p-2">
+    <div className="space-y-3 p-2">
+      <Button size="sm" variant="secondary" className="w-full" onClick={invite}>
+        Invite
+      </Button>
       {friends.map((f) => (
-        <div key={f.id} className="flex justify-between text-sm">
+        <div
+          key={f.id}
+          className="flex items-center justify-between rounded-md bg-neutral-800/50 px-2 py-1 text-sm"
+        >
           <span>{f.name}</span>
-          <span className="text-neutral-400 flex-1 text-right mr-2">{f.track}</span>
+          <span className="flex-1 text-right text-neutral-400 mr-2">{f.track}</span>
           <span>{f.emoji}</span>
         </div>
       ))}

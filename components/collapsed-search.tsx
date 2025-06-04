@@ -23,14 +23,24 @@ export default function CollapsedSearch() {
   return (
     <div className="relative" aria-expanded={open}>
       {!open && (
-        <button onClick={() => { setOpen(true); setTimeout(() => inputRef.current?.focus(), 0) }}
-          className="flex items-center justify-center w-8 h-8 text-neutral-500">
+        <button
+          onClick={() => {
+            setOpen(true)
+            setTimeout(() => inputRef.current?.focus(), 0)
+          }}
+          className="flex items-center justify-center w-8 h-8 text-neutral-500 hover:text-white"
+        >
           <SearchIcon className="h-4 w-4" />
         </button>
       )}
       {open && (
-        <Command className="absolute top-0 left-0 bg-neutral-800 rounded-md shadow-lg p-2 w-64">
-          <Input ref={inputRef} placeholder="Search" className="bg-neutral-700 text-sm" onBlur={() => setOpen(false)} />
+        <Command className="absolute top-0 left-0 bg-neutral-800/90 backdrop-blur-md rounded-md shadow-lg p-2 w-64 animate-fade-in">
+          <Input
+            ref={inputRef}
+            placeholder="Search"
+            className="bg-neutral-700 text-sm"
+            onBlur={() => setOpen(false)}
+          />
         </Command>
       )}
     </div>

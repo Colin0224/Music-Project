@@ -11,7 +11,12 @@ export default function VolumeSlider() {
   const sliderRef = useRef<HTMLDivElement>(null)
 
   return (
-    <div className="relative" onBlur={() => setOpen(false)} tabIndex={0} aria-expanded={open}>
+    <div
+      className="relative"
+      onBlur={() => setOpen(false)}
+      tabIndex={0}
+      aria-expanded={open}
+    >
       <button
         className="flex items-center justify-center w-8 h-8 text-neutral-300 hover:text-white"
         onClick={() => setOpen(!open)}
@@ -21,8 +26,8 @@ export default function VolumeSlider() {
       {open && (
         <div
           ref={sliderRef}
-          className="absolute bottom-10 left-1/2 -translate-x-1/2 w-8 p-2 bg-neutral-900 rounded-md shadow-lg"
-          style={{ minHeight: 100 }}
+          className="absolute bottom-10 left-1/2 -translate-x-1/2 w-8 p-2 bg-neutral-900/80 backdrop-blur-md rounded-md shadow-lg"
+          style={{ minHeight: 120 }}
         >
           <Slider
             orientation="vertical"

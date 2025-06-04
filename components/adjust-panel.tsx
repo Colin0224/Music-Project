@@ -21,12 +21,12 @@ export default function AdjustPanel() {
   }, [party])
 
   return (
-    <div className="space-y-3 p-2 text-sm">
-      <label className="flex items-center justify-between">
+    <div className="space-y-4 p-2 text-sm">
+      <label className="flex items-center justify-between gap-2">
         <span>Focus Mode</span>
         <Switch checked={focus} onCheckedChange={setFocus} />
       </label>
-      <label className="flex items-center justify-between">
+      <label className="flex items-center justify-between gap-2">
         <span>Party Mode</span>
         <Switch checked={party} onCheckedChange={setParty} />
       </label>
