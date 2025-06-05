@@ -1,48 +1,54 @@
 "use client"
 
-import Image from "next/image"
-import { useState } from "react"
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { SearchIcon, UserIcon, SkipBackIcon, PlayIcon, PauseIcon, SkipForwardIcon, Volume2Icon } from "lucide-react"
-import { User, defaultUser } from "@/types/user"
+// Next.js and React imports
+import Image from "next/image"  // For optimized image rendering
+import { useState } from "react"  // For component state management
 
-interface Song {
+// UI Component imports
+import { Input } from "@/components/ui/input"  // Search input field
+import { Button } from "@/components/ui/button"  // Clickable buttons (logo, user, controls)
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"  // Right sidebar tabs (UP NEXT, ADJUST, FRIENDS)
+
+// Icon imports
+import { SearchIcon, UserIcon, SkipBackIcon, PlayIcon, PauseIcon, SkipForwardIcon, Volume2Icon } from "lucide-react"  // All the icons used in the UI
+
+// Type definitions and data imports
+
+import { User, defaultUser } from "@/types/user"  
+/*
+export interface User {
   id: string
-  title: string
-  artist: string
-  duration: string
-  albumArt?: string
-  albumBackground?: string
+  name: string
+  username: string
+  email: string
+  profileImage?: string
 }
 
+export const defaultUser: User = {
+  id: "user123",
+  name: "Colin Wong",
+  username: "colin0224", 
+  email: "colinwong0224@gmail.com",
+  profileImage: "/User.png",
+} */
 
-
-const upNextSongs: Song[] = [
-  { id: "1", title: "Easily", artist: "Bruno Major", duration: "3:31" },
-  { id: "2", title: "Sanctuary", artist: "Joji", duration: "3:01" },
-  { id: "3", title: "Breezeblocks", artist: "alt-J", duration: "3:48" },
-  { id: "4", title: "blue", artist: "yung kai", duration: "4:35" },
-  { id: "5", title: "Pasilyo", artist: "Sunkissed Lola", duration: "4:31" },
-  { id: "6", title: "Cooky", artist: "Still Woozy", duration: "2:55" },
-  { id: "7", title: "Like Real People Do", artist: "Hozier", duration: "3:18" },
-  { id: "8", title: "Ivy", artist: "Frank Ocean", duration: "4:09" },
-]
-
-const currentSong: Song = {
-  id: "current",
-  title: "Sunflower",
-  artist: "Rex Orange County • Sunflower • 2017",
-  duration: "N/A",
-  albumArt: "/album.png",
-  albumBackground: "/Background.png",
-}
+import { defaultPlayerState, Song } from "@/types/player"  
+/* Song = { id: string, title: string, artist: string, duration: string, albumArt?: string, albumBackground?: string }
+defaultPlayerState = { 
+  currentSong: { id: "current", title: "Sunflower", artist: "Rex Orange County • Sunflower • 2017", duration: "N/A", albumArt: "/album.png", albumBackground: "/Background.png" },
+  isPlaying: false, progress: 0, duration: 0, currentTime: 0, volume: 0.7, isMuted: false, shuffle: false, repeat: 'none',
+  queue: [{ id: "1", title: "Easily", artist: "Bruno Major", duration: "3:31" }, { id: "2", title: "Sanctuary", artist: "Joji", duration: "3:01" }, etc.],
+  currentIndex: 0, history: []
+} */
 
 export default function MusicPlayerUI() {
   const [isPlaying, setIsPlaying] = useState(true)
   const [songProgress, setSongProgress] = useState(30) // Percentage
   const [profileImageSrc, setProfileImageSrc] = useState(defaultUser.profileImage)
+  
+  // Get current song and queue from player state
+  const currentSong = defaultPlayerState.currentSong!
+  const upNextSongs = defaultPlayerState.queue
 
   return (
     <div className="flex flex-col h-screen bg-neutral-900 text-neutral-200 font-sans">
