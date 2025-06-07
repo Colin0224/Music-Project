@@ -13,38 +13,31 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs" 
 import { SearchIcon, UserIcon, SkipBackIcon, PlayIcon, PauseIcon, SkipForwardIcon, Volume2Icon } from "lucide-react"  // All the icons used in the UI
 
 // Type definitions and data imports
-
 import { User, defaultUser } from "@/types/user"  
-/*
-export interface User {
-  id: string
-  name: string
-  username: string
-  email: string
-  profileImage?: string
-}
-
-export const defaultUser: User = {
-  id: "user123",
-  name: "Colin Wong",
-  username: "colin0224", 
-  email: "colinwong0224@gmail.com",
-  profileImage: "/User.png",
-} */
-
 import { defaultPlayerState, Song } from "@/types/player"  
-/* Song = { id: string, title: string, artist: string, duration: string, albumArt?: string, albumBackground?: string }
-defaultPlayerState = { 
-  currentSong: { id: "current", title: "Sunflower", artist: "Rex Orange County • Sunflower • 2017", duration: "N/A", albumArt: "/album.png", albumBackground: "/Background.png" },
-  isPlaying: false, progress: 0, duration: 0, currentTime: 0, volume: 0.7, isMuted: false, shuffle: false, repeat: 'none',
-  queue: [{ id: "1", title: "Easily", artist: "Bruno Major", duration: "3:31" }, { id: "2", title: "Sanctuary", artist: "Joji", duration: "3:01" }, etc.],
-  currentIndex: 0, history: []
-} */
 
 export default function MusicPlayerUI() {
   const [isPlaying, setIsPlaying] = useState(true)
-  const [songProgress, setSongProgress] = useState(30) // Percentage
   const [profileImageSrc, setProfileImageSrc] = useState(defaultUser.profileImage)
+  const [showProfilePopup, setShowProfilePopup] = useState(false) // For profile dropdown
+  
+  // Volume that updates the player state
+  const [volume, setVolume] = useState(defaultPlayerState.volume * 100) // Convert 0.1 to 10%
+  
+  // Song progress that updates the player state
+  const [songProgress, setSongProgress] = useState(defaultPlayerState.progress)
+  
+  // Update player state when volume changes
+  const handleVolumeChange = (newVolume: number) => {
+    setVolume(newVolume)
+    defaultPlayerState.volume = newVolume / 100 // Convert back to 0-1 range
+  }
+  
+  // Update player state when song progress changes
+  const handleProgressChange = (newProgress: number) => {
+    setSongProgress(newProgress)
+    defaultPlayerState.progress = newProgress
+  }
   
   // Get current song and queue from player state
   const currentSong = defaultPlayerState.currentSong!
@@ -87,27 +80,58 @@ export default function MusicPlayerUI() {
   <div className="flex-grow-[2] flex-shrink basis-auto min-w-[20px] sm:min-w-[40px]"></div> {/* Adjust flex-grow ratio (e.g., [1.5], [2], [3]) and min-width */}
 
   {/* User Icon Button - Ensure it doesn't shrink */}
-  <Button
-          variant="ghost"
-          size="icon"
-          className="rounded-full text-neutral-400 hover:text-white hover:bg-neutral-700/50 ml-4 flex-shrink-0 p-0 overflow-hidden" // Added p-0 and overflow-hidden
-        >
-          {profileImageSrc ? (
-            <Image
-              src={profileImageSrc}
-              alt="User Profile"
-              width={40}
-              height={40}
-              className="rounded-full object-cover w-full h-full"
-              onError={() => {
-                console.warn("Failed to load profile.png, defaulting to UserIcon.");
-                setProfileImageSrc(undefined);
-              }}
-            />
-          ) : (
-            <UserIcon className="h-5 w-5" /> // Default icon if image fails or profileImageSrc is null
-          )}
-        </Button>
+  <div className="relative">
+    <Button
+      variant="ghost"
+      size="icon"
+      className="rounded-full text-neutral-400 hover:text-white hover:bg-neutral-700/50 ml-4 flex-shrink-0 p-0 overflow-hidden"
+      onClick={() => setShowProfilePopup(!showProfilePopup)}
+    >
+      {profileImageSrc ? (
+        <Image
+          src={profileImageSrc}
+          alt="User Profile"
+          width={40}
+          height={40}
+          className="rounded-full object-cover w-full h-full"
+          onError={() => {
+            console.warn("Failed to load profile.png, defaulting to UserIcon.");
+            setProfileImageSrc(undefined);
+          }}
+        />
+      ) : (
+        <UserIcon className="h-5 w-5" />
+      )}
+    </Button>
+    
+    {/* Profile Dropdown Popup */}
+    {showProfilePopup && (
+      <div className="absolute top-12 right-0 bg-black/90 backdrop-blur-lg rounded-lg p-2 w-40 shadow-xl border border-neutral-700 z-50">
+        <div className="flex flex-col space-y-1">
+          <Button
+            variant="ghost"
+            className="justify-start text-neutral-300 hover:text-white hover:bg-neutral-700/50 text-sm px-3 py-2"
+            onClick={() => {
+              setShowProfilePopup(false)
+              // Add sign in logic here
+            }}
+          >
+            Sign In
+          </Button>
+          <Button
+            variant="ghost"
+            className="justify-start text-neutral-300 hover:text-white hover:bg-neutral-700/50 text-sm px-3 py-2"
+            onClick={() => {
+              setShowProfilePopup(false)
+              // Add settings logic here
+            }}
+          >
+            Settings
+          </Button>
+        </div>
+      </div>
+    )}
+  </div>
 </header>
 
       {/* Main Area */}
@@ -118,7 +142,7 @@ export default function MusicPlayerUI() {
             src={currentSong.albumBackground || "/placeholder.svg?width=1200&height=1200"}
             alt="Large Album Art"
             fill
-            className="object-cover transition-all duration-500 ease-in-out"
+            className="object-cover pointer-events-none"
             priority
           />
 
@@ -136,12 +160,17 @@ export default function MusicPlayerUI() {
                 <h3 className="font-semibold text-lg">{currentSong.title}</h3>
                 <p className="text-xs text-neutral-300">{currentSong.artist}</p>
                 <div className="mt-2 w-full">
-                  <div className="w-full h-1 bg-neutral-500/70 rounded-full group">
-                    <div
-                      className="h-full bg-white rounded-full group-hover:bg-green-400 transition-colors"
-                      style={{ width: `${songProgress}%` }}
-                    />
-                  </div>
+                  <input
+                    type="range"
+                    min="0"
+                    max="100"
+                    value={songProgress}
+                    onChange={(e) => handleProgressChange(Number(e.target.value))}
+                    className="w-full h-1 bg-neutral-500/70 rounded-full appearance-none cursor-pointer"
+                    style={{
+                      background: `linear-gradient(to right, #fff 0%, #fff ${songProgress}%, #525252 ${songProgress}%, #525252 100%)`
+                    }}
+                  />
                 </div>
               </div>
               <div className="flex items-center space-x-2 md:space-x-3">
@@ -163,9 +192,20 @@ export default function MusicPlayerUI() {
                 <Button variant="ghost" size="icon" className="text-neutral-300 hover:text-white">
                   <SkipForwardIcon className="h-5 w-5" />
                 </Button>
-                <Button variant="ghost" size="icon" className="text-neutral-300 hover:text-white hidden sm:inline-flex">
-                  <Volume2Icon className="h-5 w-5" />
-                </Button>
+                <div className="hidden sm:flex items-center space-x-2">
+                  <Volume2Icon className="h-4 w-4 text-neutral-300" />
+                  <input
+                    type="range"
+                    min="0"
+                    max="100"
+                    value={volume}
+                    onChange={(e) => handleVolumeChange(Number(e.target.value))}
+                    className="w-20 h-1 bg-neutral-600 rounded-lg appearance-none cursor-pointer"
+                    style={{
+                      background: `linear-gradient(to right, #fff 0%, #fff ${volume}%, #525252 ${volume}%, #525252 100%)`
+                    }}
+                  />
+                </div>
               </div>
             </div>
           </div>

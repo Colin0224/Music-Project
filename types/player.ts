@@ -2,9 +2,7 @@ export interface PlayerState {
   // Current playback
   currentSong: Song | null
   isPlaying: boolean
-  progress: number // 0-100 percentage
-  duration: number // total seconds
-  currentTime: number // current seconds
+  progress: number // 0-100 percentage (this is all we need!)
   
   // Audio settings
   volume: number // 0-1
@@ -14,10 +12,8 @@ export interface PlayerState {
   shuffle: boolean
   repeat: 'none' | 'one' | 'all'
   
-  // Queue management
+  // Queue management  
   queue: Song[]
-  currentIndex: number
-  history: Song[]
 }
 
 export interface Song {
@@ -54,16 +50,12 @@ const upNextSongs: Song[] = [
 export const defaultPlayerState: PlayerState = {
   currentSong: currentSong,
   isPlaying: false,
-  progress: 0,
-  duration: 0,
-  currentTime: 0,
-  volume: 0.7,
+  progress: 30, // 30% through the song
+  volume: 0.1,
   isMuted: false,
   shuffle: false,
   repeat: 'none',
   queue: upNextSongs,
-  currentIndex: 0,
-  history: []
 } 
 
 
